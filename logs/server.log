@@ -1,0 +1,24 @@
+[2025-01-22 22:16:28 ERROR (WebSocketWorker-26)] - Error processing message: No enum constant com.duynguyen.StorageWebSocketServer.MessageType.
+[2025-01-22 22:16:50 ERROR (WebSocketWorker-27)] - Error processing message: No enum constant com.duynguyen.StorageWebSocketServer.MessageType.hello
+[2025-01-22 23:01:24 ERROR (WebSocketSelector-42)] - Shutdown due to fatal error
+java.net.BindException: Address already in use
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:89) ~[?:?]
+	at org.java_websocket.server.WebSocketServer.doSetupSelectorAndServerThread(WebSocketServer.java:567) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.server.WebSocketServer.run(WebSocketServer.java:367) [Java-WebSocket-1.5.3.jar:?]
+	at java.base/java.lang.Thread.run(Thread.java:840) [?:?]
+[2025-01-22 23:01:24 ERROR (WebSocketSelector-42)] - WebSocket error: Address already in use
+[2025-01-22 23:01:37 ERROR (WebSocketSelector-42)] - Shutdown due to fatal error
+java.net.BindException: Address already in use
+	at java.base/sun.nio.ch.Net.bind0(Native Method) ~[?:?]
+	at java.base/sun.nio.ch.Net.bind(Net.java:555) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.netBind(ServerSocketChannelImpl.java:337) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:294) ~[?:?]
+	at java.base/sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:89) ~[?:?]
+	at org.java_websocket.server.WebSocketServer.doSetupSelectorAndServerThread(WebSocketServer.java:567) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.server.WebSocketServer.run(WebSocketServer.java:367) [Java-WebSocket-1.5.3.jar:?]
+	at java.base/java.lang.Thread.run(Thread.java:840) [?:?]
+[2025-01-22 23:01:37 ERROR (WebSocketSelector-42)] - WebSocket error: Address already in use
