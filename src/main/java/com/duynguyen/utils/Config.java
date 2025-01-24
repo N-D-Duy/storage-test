@@ -17,7 +17,7 @@ public class Config {
 
     public boolean load(){
         try{
-            FileInputStream input = new FileInputStream(new File("config.properties"));
+            FileInputStream input = new FileInputStream("config.properties");
             Properties props = new Properties();
             props.load(new InputStreamReader(input, StandardCharsets.UTF_8));
             props.forEach((t, u) -> {

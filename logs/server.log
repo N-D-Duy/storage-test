@@ -22,3 +22,106 @@ java.net.BindException: Address already in use
 	at org.java_websocket.server.WebSocketServer.run(WebSocketServer.java:367) [Java-WebSocket-1.5.3.jar:?]
 	at java.base/java.lang.Thread.run(Thread.java:840) [?:?]
 [2025-01-22 23:01:37 ERROR (WebSocketSelector-42)] - WebSocket error: Address already in use
+[2025-01-23 22:15:02 ERROR (main)] - Invalid connection string.
+[2025-01-23 22:15:35 ERROR (main)] - Invalid connection string.
+[2025-01-23 22:43:23 ERROR (WebSocketWorker-26)] - Failed to commit blob: Status code 400, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>InvalidBlockList</Code><Message>The specified block list is invalid.
+RequestId:8fbf31c9-c01e-003c-60ad-6dc755000000
+Time:2025-01-23T15:43:23.0461341Z</Message></Error>"
+[2025-01-23 23:15:03 ERROR (WebSocketWorker-27)] - Failed to commit blob: Status code 409, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>BlobAlreadyExists</Code><Message>The specified blob already exists.
+RequestId:bc28d018-001e-006e-79b1-6dbbbd000000
+Time:2025-01-23T16:15:03.1249546Z</Message></Error>"
+[2025-01-23 23:15:36 ERROR (WebSocketWorker-26)] - Failed to commit blob: Status code 409, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>BlobAlreadyExists</Code><Message>The specified blob already exists.
+RequestId:e7bdc06e-d01e-006d-23b2-6d5ad9000000
+Time:2025-01-23T16:15:36.3559562Z</Message></Error>"
+[2025-01-24 00:15:13 ERROR (WebSocketWorker-26)] - Failed to commit blob: null
+[2025-01-24 00:15:13 ERROR (WebSocketWorker-26)] - Error processing file chunk: null
+[2025-01-24 00:15:13 WARN  (reactor-http-epoll-4)] - [d9799812-1, L:/192.168.1.9:53840 ! R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+reactor.netty.http.client.PrematureCloseException: Connection has been closed BEFORE response, while sending request body
+[2025-01-24 00:15:13 WARN  (reactor-http-epoll-6)] - [a0424087-1, L:/192.168.1.9:53866 ! R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+reactor.netty.http.client.PrematureCloseException: Connection has been closed BEFORE response, while sending request body
+[2025-01-24 00:15:13 WARN  (reactor-http-epoll-2)] - [28b785af-1, L:/192.168.1.9:53832 ! R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+reactor.netty.http.client.PrematureCloseException: Connection has been closed BEFORE response, while sending request body
+[2025-01-24 00:15:13 WARN  (reactor-http-epoll-7)] - [388a4e50-1, L:/192.168.1.9:53880 ! R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+reactor.netty.http.client.PrematureCloseException: Connection has been closed BEFORE response, while sending request body
+[2025-01-24 00:15:13 WARN  (reactor-http-epoll-5)] - [6e3f9693-1, L:/192.168.1.9:53854 ! R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+reactor.netty.http.client.PrematureCloseException: Connection has been closed BEFORE response, while sending request body
+[2025-01-24 00:15:13 ERROR (WebSocketWorker-26)] - Runtime exception during onWebsocketMessage
+org.java_websocket.exceptions.WebsocketNotConnectedException: null
+	at org.java_websocket.WebSocketImpl.send(WebSocketImpl.java:673) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.WebSocketImpl.send(WebSocketImpl.java:649) ~[Java-WebSocket-1.5.3.jar:?]
+	at com.duynguyen.StorageWebSocketServer.sendError(StorageWebSocketServer.java:271) ~[main/:?]
+	at com.duynguyen.StorageWebSocketServer.onMessage(StorageWebSocketServer.java:119) ~[main/:?]
+	at org.java_websocket.server.WebSocketServer.onWebsocketMessage(WebSocketServer.java:718) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.drafts.Draft_6455.processFrameBinary(Draft_6455.java:959) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.drafts.Draft_6455.processFrame(Draft_6455.java:912) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.WebSocketImpl.decodeFrames(WebSocketImpl.java:401) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.WebSocketImpl.decode(WebSocketImpl.java:233) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.server.WebSocketServer$WebSocketWorker.doDecode(WebSocketServer.java:1114) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.server.WebSocketServer$WebSocketWorker.run(WebSocketServer.java:1086) [Java-WebSocket-1.5.3.jar:?]
+[2025-01-24 00:15:13 WARN  (reactor-http-epoll-3)] - [cec49f84-1, L:/192.168.1.9:53834 ! R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+reactor.netty.http.client.PrematureCloseException: Connection has been closed BEFORE response, while sending request body
+[2025-01-24 00:15:13 ERROR (WebSocketWorker-26)] - WebSocket error: null
+[2025-01-24 00:15:13 ERROR (WebSocketWorker-26)] - Error while reading from remote connection
+org.java_websocket.exceptions.WebsocketNotConnectedException: null
+	at org.java_websocket.WebSocketImpl.send(WebSocketImpl.java:673) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.WebSocketImpl.send(WebSocketImpl.java:649) ~[Java-WebSocket-1.5.3.jar:?]
+	at com.duynguyen.StorageWebSocketServer.sendError(StorageWebSocketServer.java:271) ~[main/:?]
+	at com.duynguyen.StorageWebSocketServer.onError(StorageWebSocketServer.java:278) ~[main/:?]
+	at org.java_websocket.server.WebSocketServer.onWebsocketError(WebSocketServer.java:793) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.drafts.Draft_6455.logRuntimeException(Draft_6455.java:973) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.drafts.Draft_6455.processFrameBinary(Draft_6455.java:961) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.drafts.Draft_6455.processFrame(Draft_6455.java:912) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.WebSocketImpl.decodeFrames(WebSocketImpl.java:401) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.WebSocketImpl.decode(WebSocketImpl.java:233) ~[Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.server.WebSocketServer$WebSocketWorker.doDecode(WebSocketServer.java:1114) [Java-WebSocket-1.5.3.jar:?]
+	at org.java_websocket.server.WebSocketServer$WebSocketWorker.run(WebSocketServer.java:1086) [Java-WebSocket-1.5.3.jar:?]
+[2025-01-24 10:55:14 ERROR (WebSocketWorker-26)] - Failed to commit blob: Status code 400, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>InvalidBlockList</Code><Message>The specified block list is invalid.
+RequestId:2463abd7-501e-0073-4713-6eb601000000
+Time:2025-01-24T03:55:14.1303745Z</Message></Error>"
+[2025-01-24 10:59:57 WARN  (reactor-http-epoll-7)] - [feab87ce-2, L:/192.168.1.9:58438 - R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+java.util.concurrent.TimeoutException: Channel response timed out after 60000 milliseconds.
+	at com.azure.core.http.netty.implementation.AzureSdkHandler.responseTimedOut(AzureSdkHandler.java:202) ~[azure-core-http-netty-1.15.6.jar:1.15.6]
+	at com.azure.core.http.netty.implementation.AzureSdkHandler.lambda$startResponseTracking$2(AzureSdkHandler.java:187) ~[azure-core-http-netty-1.15.6.jar:1.15.6]
+	at io.netty.util.concurrent.PromiseTask.runTask(PromiseTask.java:98) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.ScheduledFutureTask.run(ScheduledFutureTask.java:156) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute$$$capture(AbstractEventExecutor.java:166) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:469) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:408) [netty-transport-classes-epoll-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at java.base/java.lang.Thread.run(Thread.java:840) [?:?]
+[2025-01-24 10:59:57 ERROR (WebSocketWorker-27)] - java.util.concurrent.TimeoutException: Channel response timed out after 60000 milliseconds.
+[2025-01-24 11:02:37 ERROR (WebSocketWorker-30)] - Failed to commit blob: Status code 400, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>InvalidBlockList</Code><Message>The specified block list is invalid.
+RequestId:2ed5652f-e01e-0059-4c14-6e6911000000
+Time:2025-01-24T04:02:37.7397183Z</Message></Error>"
+[2025-01-24 11:13:37 ERROR (WebSocketWorker-26)] - Failed to commit blob: Status code 400, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>InvalidBlockList</Code><Message>The specified block list is invalid.
+RequestId:88de6c30-001e-006e-1e16-6ebbbd000000
+Time:2025-01-24T04:13:37.0841493Z</Message></Error>"
+[2025-01-24 11:18:22 WARN  (reactor-http-epoll-8)] - [d44c91a9-2, L:/192.168.1.9:36224 - R:duybucket.blob.core.windows.net/20.150.127.11:443] The connection observed an error
+java.util.concurrent.TimeoutException: Channel response timed out after 60000 milliseconds.
+	at com.azure.core.http.netty.implementation.AzureSdkHandler.responseTimedOut(AzureSdkHandler.java:202) ~[azure-core-http-netty-1.15.6.jar:1.15.6]
+	at com.azure.core.http.netty.implementation.AzureSdkHandler.lambda$startResponseTracking$2(AzureSdkHandler.java:187) ~[azure-core-http-netty-1.15.6.jar:1.15.6]
+	at io.netty.util.concurrent.PromiseTask.runTask(PromiseTask.java:98) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.ScheduledFutureTask.run(ScheduledFutureTask.java:156) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.AbstractEventExecutor.runTask(AbstractEventExecutor.java:173) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute$$$capture(AbstractEventExecutor.java:166) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.AbstractEventExecutor.safeExecute(AbstractEventExecutor.java) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.SingleThreadEventExecutor.runAllTasks(SingleThreadEventExecutor.java:469) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.channel.epoll.EpollEventLoop.run(EpollEventLoop.java:408) [netty-transport-classes-epoll-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:994) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) [netty-common-4.1.112.Final.jar:4.1.112.Final]
+	at java.base/java.lang.Thread.run(Thread.java:840) [?:?]
+[2025-01-24 11:18:22 ERROR (WebSocketWorker-27)] - java.util.concurrent.TimeoutException: Channel response timed out after 60000 milliseconds.
+[2025-01-24 11:26:06 ERROR (WebSocketWorker-26)] - Failed to commit blob: Status code 400, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>InvalidBlockList</Code><Message>The specified block list is invalid.
+RequestId:aad3a0de-b01e-0036-5c18-6e63e2000000
+Time:2025-01-24T04:26:06.4893046Z</Message></Error>"
+[2025-01-24 11:50:35 ERROR (WebSocketWorker-26)] - Failed to commit blob: Status code 400, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>InvalidBlockList</Code><Message>The specified block list is invalid.
+RequestId:afa36df2-501e-0011-4b1b-6e7426000000
+Time:2025-01-24T04:50:35.5401394Z</Message></Error>"
+[2025-01-24 12:56:13 ERROR (WebSocketWorker-27)] - Failed to commit blob: Status code 400, "﻿<?xml version="1.0" encoding="utf-8"?><Error><Code>InvalidBlockList</Code><Message>The specified block list is invalid.
+RequestId:d856f6ad-a01e-0077-7624-6e3b06000000
+Time:2025-01-24T05:56:13.6662183Z</Message></Error>"

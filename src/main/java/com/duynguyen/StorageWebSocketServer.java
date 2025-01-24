@@ -5,15 +5,21 @@ import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.specialized.BlockBlobClient;
 import com.duynguyen.utils.Log;
+import org.apache.commons.io.FilenameUtils;
 import org.java_websocket.WebSocket;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -39,7 +45,7 @@ public class StorageWebSocketServer extends WebSocketServer {
         final long totalSize;
         final String containerName;
         final ByteArrayOutputStream buffer;
-        final BlockBlobClient blockBlobClient;
+        BlockBlobClient blockBlobClient;
         final String uploadId;
         int blockIndex;
         long bytesReceived;
@@ -69,20 +75,30 @@ public class StorageWebSocketServer extends WebSocketServer {
         if (session != null) {
             Log.info("Upload session closed for file: " + session.fileName + ", reason: " + reason);
             session.buffer.reset();
+        } else {
+            Log.info("Connection closed: " + conn.getRemoteSocketAddress());
         }
     }
 
     @Override
     public void onMessage(WebSocket conn, String message) {
         try {
-            // Expect: JSON format for upload initialization
-            // {"action": "init", "fileName": "example.jpg", "contentType": "image/jpeg",
-            // "size": 1234567, "container": "images"}
-            if (message.contains("\"action\":\"init\"")) {
-                handleUploadInit(conn, message);
-            } else {
-                sendError(conn, "Invalid message format");
+            JSONObject json = new JSONObject(message);
+            String action = json.getString("action");
+            switch (action) {
+                case "init":
+                    handleUploadInit(conn, json);
+                    break;
+                case "resolve_blob_exists":
+                    String strategy = json.getString("strategy");
+                    handleBlobExistsStrategy(conn, strategy);
+                    break;
+                default:
+                    sendError(conn, "Invalid action: " + action);
             }
+        } catch (JSONException e) {
+            Log.error("Invalid JSON: " + e.getMessage());
+            sendError(conn, "Invalid message format");
         } catch (Exception e) {
             Log.error("Error processing message: " + e.getMessage());
             sendError(conn, "Failed to process message: " + e.getMessage());
@@ -106,15 +122,12 @@ public class StorageWebSocketServer extends WebSocketServer {
         }
     }
 
-    private void handleUploadInit(WebSocket conn, String message) {
+    private void handleUploadInit(WebSocket conn, JSONObject json) {
         try {
-            // basic validation
-            String[] parts = message.split(",");
-            String fileName = parts[1].split(":")[1].replace("\"", "").trim();
-            String contentType = parts[2].split(":")[1].replace("\"", "").trim();
-            long size = Long.parseLong(parts[3].split(":")[1].trim());
-            String container = parts[4].split(":")[1].replace("\"", "").replace("}", "").trim();
-
+            String fileName = json.getString("fileName");
+            String contentType = json.getString("contentType");
+            long size = json.getLong("size");
+            String container = json.getString("container");
             Log.info("Initializing upload for file: " + fileName + ", size: " + size + ", container: " + container);
 
             BlobContainerClient containerClient = blobServiceClient.createBlobContainerIfNotExists(container);
@@ -124,7 +137,10 @@ public class StorageWebSocketServer extends WebSocketServer {
             UploadSession session = new UploadSession(fileName, contentType, size, container, blockBlobClient);
             sessions.put(conn, session);
 
-            conn.send("{\"status\":\"ready\",\"uploadId\":\"" + session.uploadId + "\"}");
+            JSONObject response = new JSONObject();
+            response.put("uploadId", session.uploadId);
+            response.put("status", "ready");
+            conn.send(response.toString());
         } catch (Exception e) {
             Log.error("Failed to initialize upload: " + e.getMessage());
             sendError(conn, "Failed to initialize upload: " + e.getMessage());
@@ -136,17 +152,14 @@ public class StorageWebSocketServer extends WebSocketServer {
         buffer.get(data);
         session.buffer.write(data, 0, data.length);
         session.bytesReceived += data.length;
-
-        // If buffer reaches block size or it's the last chunk, upload it
         if (session.buffer.size() >= BLOCK_SIZE || session.bytesReceived >= session.totalSize) {
             uploadBlock(conn, session);
         }
-
-        // Send progress update
         double progress = (double) session.bytesReceived / session.totalSize * 100;
-        conn.send("{\"status\":\"progress\",\"percentage\":" + String.format("%.2f", progress) + "}");
-
-        // If upload is complete, commit the blob
+        JSONObject progressResponse = new JSONObject();
+        progressResponse.put("percentage", String.format("%.2f", progress));
+        progressResponse.put("status", "progress");
+        conn.send(progressResponse.toString());
         if (session.bytesReceived >= session.totalSize) {
             commitBlob(conn, session);
         }
@@ -161,7 +174,6 @@ public class StorageWebSocketServer extends WebSocketServer {
             uploadExecutor.submit(() -> {
                 try {
                     session.blockBlobClient.stageBlock(blockId, new ByteArrayInputStream(blockData), blockData.length);
-                    Log.info(String.format("Uploaded block %d for file %s", session.blockIndex, session.fileName));
                 } catch (Exception e) {
                     Log.error("Failed to upload block: " + e.getMessage());
                     sendError(conn, "Failed to upload block: " + e.getMessage());
@@ -178,23 +190,106 @@ public class StorageWebSocketServer extends WebSocketServer {
 
     private void commitBlob(WebSocket conn, UploadSession session) {
         try {
-            String[] blockIds = new String[session.blockIndex];
-            for (int i = 0; i < session.blockIndex; i++) {
-                blockIds[i] = Base64.getEncoder().encodeToString(
-                        String.format("%06d", i).getBytes());
+            List<String> blockIds = getBlockIds(session);
+            if (blockIds.isEmpty()) {
+                sendError(conn, "No blocks to upload");
+                return;
             }
 
-            session.blockBlobClient.commitBlockList(java.util.Arrays.asList(blockIds));
-            conn.send("{\"status\":\"complete\",\"url\":\"" + session.blockBlobClient.getBlobUrl() + "\"}");
-            sessions.remove(conn);
+            try {
+                session.blockBlobClient.commitBlockList(blockIds);
+            } catch (RuntimeException e) {
+                if (e.getMessage() != null && e.getMessage().contains("BlobAlreadyExists")) {
+                    JSONObject strategyPrompt = new JSONObject();
+                    strategyPrompt.put("status", "blob_exists");
+                    strategyPrompt.put("fileName", session.fileName);
+                    strategyPrompt.put("existingBlobUrl", session.blockBlobClient.getBlobUrl());
+                    strategyPrompt.put("strategies", new JSONArray(new String[]{"override", "uniquename"}));
+                    conn.send(strategyPrompt.toString());
+                    return;
+                } else {
+                    throw e;
+                }
+            }
+            sendCompletionResponse(conn, session);
         } catch (Exception e) {
             Log.error("Failed to commit blob: " + e.getMessage());
             sendError(conn, "Failed to commit blob: " + e.getMessage());
         }
     }
 
+    public void handleBlobExistsStrategy(WebSocket conn, String strategy) {
+        UploadSession session = sessions.get(conn);
+        if (session == null) {
+            sendError(conn, "No active upload session");
+            return;
+        }
+
+        try {
+            List<String> blockIds = getBlockIds(session);
+            if (blockIds.isEmpty()) {
+                sendError(conn, "No blocks to commit");
+                return;
+            }
+            switch (strategy) {
+                case "override":
+                    session.blockBlobClient.delete();
+                    session.blockBlobClient.commitBlockList(blockIds);
+                    break;
+                case "uniquename":
+                    String uniqueFileName = generateUniqueFileName(session.fileName);
+                    session.blockBlobClient = session.blockBlobClient.getContainerClient()
+                            .getBlobClient(uniqueFileName)
+                            .getBlockBlobClient();
+                    try {
+                        session.blockBlobClient.commitBlockList(blockIds);
+                    } catch (Exception e) {
+                        sendError(conn, "Failed to commit blob: " + e.getMessage());
+                        return;
+                    }
+                    break;
+                default:
+                    sendError(conn, "Invalid strategy");
+                    return;
+            }
+            sendCompletionResponse(conn, session);
+        } catch (Exception e) {
+            sendError(conn, "Strategy execution failed: " + e.getMessage());
+        }
+    }
+
+    private String generateUniqueFileName(String originalFileName) {
+        String baseName = FilenameUtils.getBaseName(originalFileName);
+        String extension = FilenameUtils.getExtension(originalFileName);
+        return String.format("%s_%s.%s",
+                baseName,
+                UUID.randomUUID().toString().substring(0, 8),
+                extension
+        );
+    }
+
+    private List<String> getBlockIds(UploadSession session) {
+        List<String> blockIds = new ArrayList<>();
+        for (int i = 0; i < session.blockIndex; i++) {
+            blockIds.add(Base64.getEncoder().encodeToString(
+                    String.format("%06d", i).getBytes()));
+        }
+        return blockIds;
+    }
+
+    private void sendCompletionResponse(WebSocket conn, UploadSession session) {
+        JSONObject completionResponse = new JSONObject();
+        completionResponse.put("status", "complete");
+        completionResponse.put("url", session.blockBlobClient.getBlobUrl());
+        conn.send(completionResponse.toString());
+        sessions.remove(conn);
+    }
+
     private void sendError(WebSocket conn, String message) {
-        conn.send("{\"status\":\"error\",\"message\":\"" + message + "\"}");
+        JSONObject errorResponse = new JSONObject();
+        errorResponse.put("message", message);
+        errorResponse.put("status", "error");
+        conn.send(errorResponse.toString());
     }
 
     @Override
